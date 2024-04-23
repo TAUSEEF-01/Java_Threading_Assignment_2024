@@ -23,7 +23,6 @@ class WithdrawProcessingThread extends Thread {
     @Override
     public void run() {
         while (true) {
-
             synchronized (arrList) {
                 if (!arrList[id].isEmpty()) {
 

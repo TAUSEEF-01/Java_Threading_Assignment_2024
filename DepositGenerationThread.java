@@ -11,7 +11,7 @@ class DepositGenerationThread extends Thread {
 
     @Override
     public void run() {
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 500; i++) {
 
             int id = random.generateNumber(30);
             System.out

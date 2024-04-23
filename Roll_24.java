@@ -42,6 +42,7 @@ public class Roll_24 {
 
         DepositProcessingThread depositProcThread1 = new DepositProcessingThread(mac, arrList_Deposit, 1000, 1);
         DepositProcessingThread depositProcThread2 = new DepositProcessingThread(mac, arrList_Deposit, 800, 2);
+
         System.out.println("DepositProcessingThread1 started!");
         depositProcThread1.start();
         System.out.println("DepositProcessingThread2 started!");
@@ -56,6 +57,7 @@ public class Roll_24 {
 
         WithdrawProcessingThread withdrawProcThread1 = new WithdrawProcessingThread(mac, arrList_Withdraw, 1000, 1);
         WithdrawProcessingThread withdrawProcThread2 = new WithdrawProcessingThread(mac, arrList_Withdraw, 800, 2);
+
         System.out.println("WithdrawProcessingThread1 started!");
         withdrawProcThread1.start();
         System.out.println("WithdrawProcessingThread2 started!");
@@ -68,17 +70,6 @@ public class Roll_24 {
             e.printStackTrace();
         }
 
-        // try {
-        // depositGenThread.join();
-        // withdrawGenThread.join();
-        // depositProcThread1.join();
-        // depositProcThread2.join();
-        // withdrawProcThread1.join();
-        // withdrawProcThread2.join();
-        // } catch (InterruptedException e) {
-        // e.printStackTrace();
-        // }
-
-        System.out.println("Program END'S here!!!");
+        System.out.println("Program END here!!!");
     }
 }
