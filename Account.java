@@ -1,4 +1,4 @@
-public class Account {
+class Account {
     public String name;
     public String accNumber;
     public int maxTransactionLimit;

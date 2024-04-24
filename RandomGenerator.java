@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class RandomGenerator {
+class RandomGenerator {
     private String allChars = "abcdefghijklmnopqrstuvwxyz";
     private Random rndm = new Random();
 

@@ -40,35 +40,106 @@ public class Roll_24 {
             e.printStackTrace();
         }
 
-        DepositProcessingThread depositProcThread1 = new DepositProcessingThread(mac, arrList_Deposit, 1000, 1);
-        DepositProcessingThread depositProcThread2 = new DepositProcessingThread(mac, arrList_Deposit, 800, 2);
 
-        System.out.println("DepositProcessingThread1 started!");
-        depositProcThread1.start();
-        System.out.println("DepositProcessingThread2 started!");
-        depositProcThread2.start();
+        Random random = new Random();
+        int numberOfWorkerThreads = 2 + random.nextInt(4);
+        int sleepTime;
 
-        try {
-            depositProcThread1.join();
-            depositProcThread2.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        List<DepositProcessingThread> depositProcThreads = new ArrayList<>();
+        for (int i = 1; i <= numberOfWorkerThreads; i++) {
+            
+            if(i%2==0)
+                sleepTime = 800;
+            else 
+                sleepTime = 1000;
+
+            DepositProcessingThread depositProcThread = new DepositProcessingThread(mac, arrList_Deposit, sleepTime, i);
+            depositProcThreads.add(depositProcThread);
+            System.out.println("DepositProcessingThread " + i + " started!");
+            depositProcThread.start();
         }
 
-        WithdrawProcessingThread withdrawProcThread1 = new WithdrawProcessingThread(mac, arrList_Withdraw, 1000, 1);
-        WithdrawProcessingThread withdrawProcThread2 = new WithdrawProcessingThread(mac, arrList_Withdraw, 800, 2);
-
-        System.out.println("WithdrawProcessingThread1 started!");
-        withdrawProcThread1.start();
-        System.out.println("WithdrawProcessingThread2 started!");
-        withdrawProcThread2.start();
-
-        try {
-            withdrawProcThread1.join();
-            withdrawProcThread2.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // Wait for all Deposit Processing Threads to complete
+        for (DepositProcessingThread thread : depositProcThreads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
+
+        // DepositProcessingThread depositProcThread1 = new DepositProcessingThread(mac, arrList_Deposit, 1000, 1);
+        // DepositProcessingThread depositProcThread2 = new DepositProcessingThread(mac, arrList_Deposit, 800, 2);
+
+        // System.out.println("DepositProcessingThread1 started! Loop no: " + i);
+        // depositProcThread1.start();
+        // System.out.println("DepositProcessingThread2 started! Loop no: " + i);
+        // depositProcThread2.start();
+
+        // try {
+        //     depositProcThread1.join();
+        //     depositProcThread2.join();
+        // } catch (InterruptedException e) {
+        //     e.printStackTrace();
+        // }
+
+        // for (int i = 1; i <= 5; i++) {
+
+        //     DepositProcessingThread depositProcThread1 = new DepositProcessingThread(mac, arrList_Deposit, 1000, 1);
+        //     DepositProcessingThread depositProcThread2 = new DepositProcessingThread(mac, arrList_Deposit, 800, 2);
+
+        //     System.out.println("DepositProcessingThread1 started! Loop no: " + i);
+        //     depositProcThread1.start();
+        //     System.out.println("DepositProcessingThread2 started! Loop no: " + i);
+        //     depositProcThread2.start();
+
+        //     // try {
+        //     //     depositProcThread1.join();
+        //     //     depositProcThread2.join();
+        //     // } catch (InterruptedException e) {
+        //     //     e.printStackTrace();
+        //     // }
+        // }
+
+        List<WithdrawProcessingThread> withdrawProcThreads = new ArrayList<>();
+        for (int i = 1; i <= numberOfWorkerThreads; i++) {
+
+            if(i%2==0)
+                sleepTime = 800;
+            else 
+                sleepTime = 1000;
+
+            WithdrawProcessingThread withdrawProcThread = new WithdrawProcessingThread(mac, arrList_Withdraw, sleepTime, i);
+            withdrawProcThreads.add(withdrawProcThread);
+            System.out.println("WithdrawProcessingThread " + i + " started!");
+            withdrawProcThread.start();
+        }
+
+
+        for (WithdrawProcessingThread thread : withdrawProcThreads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        // WithdrawProcessingThread withdrawProcThread1 = new WithdrawProcessingThread(mac, arrList_Withdraw, 1000, 1);
+        // WithdrawProcessingThread withdrawProcThread2 = new WithdrawProcessingThread(mac, arrList_Withdraw, 800, 2);
+
+        // System.out.println("WithdrawProcessingThread1 started!");
+        // withdrawProcThread1.start();
+        // System.out.println("WithdrawProcessingThread2 started!");
+        // withdrawProcThread2.start();
+
+        // try {
+        //     withdrawProcThread1.join();
+        //     withdrawProcThread2.join();
+        // } catch (InterruptedException e) {
+        //     e.printStackTrace();
+        // }
 
         System.out.println("Program END here!!!");
     }

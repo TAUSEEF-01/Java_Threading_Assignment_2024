@@ -10,6 +10,6 @@ class MaxWithdrawTransactionLimitException extends Exception {
     }
 }
 
-public class Exceptions {
+class Exceptions {
 
 }

@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class AccountGenerationThread extends Thread {
+class AccountGenerationThread extends Thread {
 
     Map<Integer, Account> mac;
     RandomGenerator random;
