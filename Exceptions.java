@@ -1,11 +1,11 @@
-class MaxDepositTransactionLimitException extends Exception {
-    public MaxDepositTransactionLimitException(String s) {
+class Max_Deposit_Transaction_Limit_Exception extends Exception {
+    public Max_Deposit_Transaction_Limit_Exception(String s) {
         super(s);
     }
 }
 
-class MaxWithdrawTransactionLimitException extends Exception {
-    public MaxWithdrawTransactionLimitException(String s) {
+class Max_Withdraw_Transaction_Limit_Exception extends Exception {
+    public Max_Withdraw_Transaction_Limit_Exception(String s) {
         super(s);
     }
 }

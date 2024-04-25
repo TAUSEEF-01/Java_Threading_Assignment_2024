@@ -9,8 +9,8 @@ public class Roll_24 {
     public static void main(String[] args) {
         Map<Integer, Account> mac = new HashMap<>();
 
-        AccountGenerationThread accountGenThread = new AccountGenerationThread(mac);
-        System.out.println("AccountGenerationThread started!");
+        Account_Generation_Thread accountGenThread = new Account_Generation_Thread(mac);
+        System.out.println("Account_Generation_Thread started!");
         accountGenThread.start();
 
         try {
@@ -33,11 +33,11 @@ public class Roll_24 {
             arrList_Withdraw[i] = new ArrayList<>();
         }
 
-        DepositGenerationThread depositGenThread = new DepositGenerationThread(arrList_Deposit);
-        WithdrawGenerationThread withdrawGenThread = new WithdrawGenerationThread(arrList_Withdraw);
-        System.out.println("DepositGenerationThread started!");
+        Deposit_Generation_Thread depositGenThread = new Deposit_Generation_Thread(arrList_Deposit);
+        Withdraw_Generation_Thread withdrawGenThread = new Withdraw_Generation_Thread(arrList_Withdraw);
+        System.out.println("Deposit_Generation_Thread started!");
         depositGenThread.start();
-        System.out.println("WithdrawGenerationThread started!");
+        System.out.println("Withdraw_Generation_Thread started!");
         withdrawGenThread.start();
 
         try {
@@ -52,20 +52,21 @@ public class Roll_24 {
         random = new Random();
         numberOfWorkerThreads = 2 + random.nextInt(4);
 
-        List<DepositProcessingThread> depositProcThreads = new ArrayList<>();
+        List<Deposit_Processing_Thread> depositProcThreads = new ArrayList<>();
         for (int i = 1; i <= numberOfWorkerThreads; i++) {
             if (i % 2 == 0)
                 sleepTime = 800;
             else
                 sleepTime = 1000;
 
-            DepositProcessingThread depositProcThread = new DepositProcessingThread(mac, arrList_Deposit, sleepTime, i);
+            Deposit_Processing_Thread depositProcThread = new Deposit_Processing_Thread(mac, arrList_Deposit, sleepTime,
+                    i);
             depositProcThreads.add(depositProcThread);
-            System.out.println("DepositProcessingThread " + i + " started!");
+            System.out.println("Deposit_Processing_Thread " + i + " started!");
             depositProcThread.start();
         }
 
-        for (DepositProcessingThread thread : depositProcThreads) {
+        for (Deposit_Processing_Thread thread : depositProcThreads) {
             try {
                 thread.join();
             } catch (InterruptedException e) {
@@ -75,21 +76,22 @@ public class Roll_24 {
             }
         }
 
-        List<WithdrawProcessingThread> withdrawProcThreads = new ArrayList<>();
+        List<Withdraw_Processing_Thread> withdrawProcThreads = new ArrayList<>();
         for (int i = 1; i <= numberOfWorkerThreads; i++) {
             if (i % 2 == 0)
                 sleepTime = 800;
             else
                 sleepTime = 1000;
 
-            WithdrawProcessingThread withdrawProcThread = new WithdrawProcessingThread(mac, arrList_Withdraw, sleepTime,
+            Withdraw_Processing_Thread withdrawProcThread = new Withdraw_Processing_Thread(mac, arrList_Withdraw,
+                    sleepTime,
                     i);
             withdrawProcThreads.add(withdrawProcThread);
-            System.out.println("WithdrawProcessingThread " + i + " started!");
+            System.out.println("Withdraw_Processing_Thread " + i + " started!");
             withdrawProcThread.start();
         }
 
-        for (WithdrawProcessingThread thread : withdrawProcThreads) {
+        for (Withdraw_Processing_Thread thread : withdrawProcThreads) {
             try {
                 thread.join();
             } catch (InterruptedException e) {
@@ -116,30 +118,30 @@ class Account {
         this.balance = 0;
     }
 
-    public void deposit(int amount, int id) throws MaxDepositTransactionLimitException {
+    public void deposit(int amount, int id) throws Max_Deposit_Transaction_Limit_Exception {
 
         try {
             if (amount > maxTransactionLimit) {
-                throw new MaxDepositTransactionLimitException("Maximum DepositTransaction Limit Violated");
+                throw new Max_Deposit_Transaction_Limit_Exception("Maximum DepositTransaction Limit Violated");
             }
             balance += amount;
             System.out.println("Money: " + amount + " added to the account!");
-        } catch (MaxDepositTransactionLimitException e) {
+        } catch (Max_Deposit_Transaction_Limit_Exception e) {
             System.out.println(e + " from ID: " + id);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void withdraw(int amount, int id) throws MaxWithdrawTransactionLimitException {
+    public void withdraw(int amount, int id) throws Max_Withdraw_Transaction_Limit_Exception {
 
         try {
             if (amount > maxTransactionLimit) {
-                throw new MaxWithdrawTransactionLimitException("Maximum WithdrawTransaction Limit Violated");
+                throw new Max_Withdraw_Transaction_Limit_Exception("Maximum WithdrawTransaction Limit Violated");
             }
             balance -= amount;
             System.out.println("Money: " + amount + " withdrawn from the account!");
-        } catch (MaxWithdrawTransactionLimitException e) {
+        } catch (Max_Withdraw_Transaction_Limit_Exception e) {
             System.out.println(e + " from ID: " + id);
         } catch (Exception e) {
             e.printStackTrace();
@@ -147,12 +149,12 @@ class Account {
     }
 }
 
-class AccountGenerationThread extends Thread {
+class Account_Generation_Thread extends Thread {
 
     Map<Integer, Account> mac;
     RandomGenerator random;
 
-    public AccountGenerationThread(Map<Integer, Account> mac) {
+    public Account_Generation_Thread(Map<Integer, Account> mac) {
         this.mac = mac;
         this.random = new RandomGenerator();
     }
@@ -184,18 +186,18 @@ class AccountGenerationThread extends Thread {
     }
 }
 
-class DepositGenerationThread extends Thread {
+class Deposit_Generation_Thread extends Thread {
     ArrayList<Integer>[] arrList;
     RandomGenerator random;
 
-    public DepositGenerationThread(ArrayList<Integer>[] arrList) {
+    public Deposit_Generation_Thread(ArrayList<Integer>[] arrList) {
         this.arrList = arrList;
         this.random = new RandomGenerator();
     }
 
     @Override
     public void run() {
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 13; i++) {
 
             int id = random.generateNumber(30);
             System.out
@@ -219,18 +221,18 @@ class DepositGenerationThread extends Thread {
 
 }
 
-class WithdrawGenerationThread extends Thread {
+class Withdraw_Generation_Thread extends Thread {
     ArrayList<Integer>[] arrList;
     RandomGenerator random;
 
-    public WithdrawGenerationThread(ArrayList<Integer>[] arrList) {
+    public Withdraw_Generation_Thread(ArrayList<Integer>[] arrList) {
         this.arrList = arrList;
         this.random = new RandomGenerator();
     }
 
     @Override
     public void run() {
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 13; i++) {
 
             int id = random.generateNumber(30);
             System.out.println(
@@ -253,7 +255,7 @@ class WithdrawGenerationThread extends Thread {
     }
 }
 
-class DepositProcessingThread extends Thread {
+class Deposit_Processing_Thread extends Thread {
     Map<Integer, Account> mac;
     ArrayList<Integer>[] arrList;
     RandomGenerator random;
@@ -262,7 +264,7 @@ class DepositProcessingThread extends Thread {
     int threadNo;
     int processNo;
 
-    public DepositProcessingThread(Map<Integer, Account> mac, ArrayList<Integer>[] arrList, int sleepTime,
+    public Deposit_Processing_Thread(Map<Integer, Account> mac, ArrayList<Integer>[] arrList, int sleepTime,
             int threadNo) {
         this.mac = mac;
         this.arrList = arrList;
@@ -289,7 +291,7 @@ class DepositProcessingThread extends Thread {
 
                         try {
                             acc.deposit(DepositAmount, id);
-                        } catch (MaxDepositTransactionLimitException e) {
+                        } catch (Max_Deposit_Transaction_Limit_Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -321,7 +323,7 @@ class DepositProcessingThread extends Thread {
     }
 }
 
-class WithdrawProcessingThread extends Thread {
+class Withdraw_Processing_Thread extends Thread {
     Map<Integer, Account> mac;
     ArrayList<Integer>[] arrList;
     RandomGenerator random;
@@ -330,7 +332,7 @@ class WithdrawProcessingThread extends Thread {
     int threadNo;
     int processNo;
 
-    public WithdrawProcessingThread(Map<Integer, Account> mac, ArrayList<Integer>[] arrList, int sleepTime,
+    public Withdraw_Processing_Thread(Map<Integer, Account> mac, ArrayList<Integer>[] arrList, int sleepTime,
             int threadNo) {
         this.mac = mac;
         this.arrList = arrList;
@@ -357,7 +359,7 @@ class WithdrawProcessingThread extends Thread {
 
                         try {
                             acc.withdraw(WithdrawAmount, id);
-                        } catch (MaxWithdrawTransactionLimitException e) {
+                        } catch (Max_Withdraw_Transaction_Limit_Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -429,14 +431,14 @@ class RandomGenerator {
 
 }
 
-class MaxDepositTransactionLimitException extends Exception {
-    public MaxDepositTransactionLimitException(String s) {
+class Max_Deposit_Transaction_Limit_Exception extends Exception {
+    public Max_Deposit_Transaction_Limit_Exception(String s) {
         super(s);
     }
 }
 
-class MaxWithdrawTransactionLimitException extends Exception {
-    public MaxWithdrawTransactionLimitException(String s) {
+class Max_Withdraw_Transaction_Limit_Exception extends Exception {
+    public Max_Withdraw_Transaction_Limit_Exception(String s) {
         super(s);
     }
 }
