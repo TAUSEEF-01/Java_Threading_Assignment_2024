@@ -61,6 +61,12 @@ public class Roll_24 {
 
             Deposit_Processing_Thread depositProcThread = new Deposit_Processing_Thread(mac, arrList_Deposit, sleepTime,
                     i);
+
+            if (i % 2 != 0)
+                depositProcThread.setPriority(10);
+            else
+                depositProcThread.setPriority(3);
+                
             depositProcThreads.add(depositProcThread);
             System.out.println("Deposit_Processing_Thread " + i + " started!");
             depositProcThread.start();
@@ -86,6 +92,12 @@ public class Roll_24 {
             Withdraw_Processing_Thread withdrawProcThread = new Withdraw_Processing_Thread(mac, arrList_Withdraw,
                     sleepTime,
                     i);
+
+            if (i % 2 != 0)
+                withdrawGenThread.setPriority(10);
+            else
+                withdrawGenThread.setPriority(3);
+
             withdrawProcThreads.add(withdrawProcThread);
             System.out.println("Withdraw_Processing_Thread " + i + " started!");
             withdrawProcThread.start();

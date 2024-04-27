@@ -6,8 +6,75 @@ public class Roll_24 {
     public static int numberOfWorkerThreads;
     public static int sleepTime;
 
-    public static void main(String[] args) {
+    public static void main(String args[]) {
+
+        Scanner sc = new Scanner(System.in);
+
         Map<Integer, Account> mac = new HashMap<>();
+
+        Boolean running = true;
+        while (running == true) {
+            running = mainLoop(sc, running, mac);
+        }
+    }
+
+    public static boolean mainLoop(Scanner sc, boolean running, Map<Integer, Account> mac) {
+        clearScreen();
+        System.out.println("Enter choice: ");
+        System.out.println("1. Generate random information");
+        System.out.println("2. Show information");
+        System.out.println("3. Show all information");
+        System.out.println("3. Type any number and hit enter to EXIT!");
+        System.out.println();
+        System.out.print("Your choice: ");
+        int n;
+
+        try {
+            n = sc.nextInt();
+        } catch (Exception e) {
+            System.out.println("Invalid choice! " + e);
+            running = false;
+            return running;
+        }
+
+        if (mac.isEmpty() && (n == 2 || n == 3)) {
+            clearScreen();
+            System.out.println("Generate random information first!");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return running;
+        }
+
+        int id;
+
+        clearScreen();
+
+        if (n == 1) {
+            InfoGenerate(sc, mac);
+            clearScreen();
+        } else if (n == 2) {
+            System.out.print("Enter person id: ");
+            id = sc.nextInt();
+            show_info(sc, mac, id);
+            clearScreen();
+        } else if (n == 3) {
+            show_all_info(sc, mac);
+            clearScreen();
+        } else {
+            running = false;
+            return running;
+        }
+
+        System.out.println();
+
+        clearScreen();
+        return running;
+    }
+
+    public static void InfoGenerate(Scanner sc, Map<Integer, Account> mac) {
 
         Account_Generation_Thread accountGenThread = new Account_Generation_Thread(mac);
         System.out.println("Account_Generation_Thread started!");
@@ -54,16 +121,19 @@ public class Roll_24 {
 
         List<Deposit_Processing_Thread> depositProcThreads = new ArrayList<>();
         for (int i = 1; i <= numberOfWorkerThreads; i++) {
-            if (i % 2 == 0)
-                sleepTime = 800;
-            else
-                sleepTime = 1000;
 
-            Deposit_Processing_Thread depositProcThread = new Deposit_Processing_Thread(mac, arrList_Deposit, sleepTime,
+            Deposit_Processing_Thread depositProcThread1 = new Deposit_Processing_Thread(mac, arrList_Deposit,
+                    1000,
                     i);
-            depositProcThreads.add(depositProcThread);
+            Deposit_Processing_Thread depositProcThread2 = new Deposit_Processing_Thread(mac, arrList_Deposit,
+                    800,
+                    i);
+
+            depositProcThreads.add(depositProcThread1);
+            depositProcThreads.add(depositProcThread2);
             System.out.println("Deposit_Processing_Thread " + i + " started!");
-            depositProcThread.start();
+            depositProcThread1.start();
+            depositProcThread2.start();
         }
 
         for (Deposit_Processing_Thread thread : depositProcThreads) {
@@ -78,17 +148,20 @@ public class Roll_24 {
 
         List<Withdraw_Processing_Thread> withdrawProcThreads = new ArrayList<>();
         for (int i = 1; i <= numberOfWorkerThreads; i++) {
-            if (i % 2 == 0)
-                sleepTime = 800;
-            else
-                sleepTime = 1000;
 
-            Withdraw_Processing_Thread withdrawProcThread = new Withdraw_Processing_Thread(mac, arrList_Withdraw,
-                    sleepTime,
+            Withdraw_Processing_Thread withdrawProcThread1 = new Withdraw_Processing_Thread(mac, arrList_Withdraw,
+                    1000,
                     i);
-            withdrawProcThreads.add(withdrawProcThread);
+
+            Withdraw_Processing_Thread withdrawProcThread2 = new Withdraw_Processing_Thread(mac, arrList_Withdraw,
+                    800,
+                    i);
+
+            withdrawProcThreads.add(withdrawProcThread1);
+            withdrawProcThreads.add(withdrawProcThread2);
             System.out.println("Withdraw_Processing_Thread " + i + " started!");
-            withdrawProcThread.start();
+            withdrawProcThread1.start();
+            withdrawProcThread2.start();
         }
 
         for (Withdraw_Processing_Thread thread : withdrawProcThreads) {
@@ -101,7 +174,70 @@ public class Roll_24 {
             }
         }
 
-        System.out.println("Program END here!!!");
+        System.out.println();
+        System.out.println("Random information generated!");
+
+        while (true) {
+            System.out.println("Press 0 to return.");
+            int press = sc.nextInt();
+            if (press == 0) {
+                clearScreen();
+                return;
+            }
+        }
+    }
+
+    public static void show_info(Scanner sc, Map<Integer, Account> mac, int id) {
+        clearScreen();
+        if (id >= 30) {
+            System.out.println("Invalid ID!");
+            System.out.println();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            return;
+        }
+
+        Account s = mac.get(id);
+        s.printInfo();
+
+        while (true) {
+            System.out.println("Press 0 to return.");
+            int press = sc.nextInt();
+            if (press == 0) {
+                clearScreen();
+                return;
+            }
+        }
+    }
+
+    public static void show_all_info(Scanner sc, Map<Integer, Account> mac) {
+        clearScreen();
+        Account s[] = new Account[30];
+
+        for (int i = 0; i < 30; i++) {
+            s[i] = mac.get(i);
+            System.out.println("ID: " + i);
+            s[i].printInfo();
+            System.out.println();
+        }
+
+        while (true) {
+            System.out.println("Press 0 to return.");
+            int press = sc.nextInt();
+            if (press == 0) {
+                clearScreen();
+                return;
+            }
+        }
+    }
+
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }
 
@@ -146,6 +282,13 @@ class Account {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void printInfo() {
+        System.out.println("Name: " + this.name);
+        System.out.println("Account number: " + this.accNumber);
+        System.out.println("Max transaction limit: " + this.maxTransactionLimit);
+        System.out.println("Balance: " + this.balance);
     }
 }
 
@@ -197,7 +340,7 @@ class Deposit_Generation_Thread extends Thread {
 
     @Override
     public void run() {
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 500; i++) {
 
             int id = random.generateNumber(30);
             System.out
@@ -232,7 +375,7 @@ class Withdraw_Generation_Thread extends Thread {
 
     @Override
     public void run() {
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 500; i++) {
 
             int id = random.generateNumber(30);
             System.out.println(
@@ -305,6 +448,10 @@ class Deposit_Processing_Thread extends Thread {
                 } else {
                     id++;
                 }
+
+                if (id >= 30)
+                    break;
+
             }
             try {
                 Thread.sleep(sleepTime);
@@ -313,14 +460,12 @@ class Deposit_Processing_Thread extends Thread {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            if (id >= 30)
-                break;
         }
 
         System.out.println("Deposit processing DONE!");
         System.out.println();
     }
+
 }
 
 class Withdraw_Processing_Thread extends Thread {
@@ -373,6 +518,9 @@ class Withdraw_Processing_Thread extends Thread {
                 } else {
                     id++;
                 }
+
+                if (id >= 30)
+                    break;
             }
             try {
                 Thread.sleep(sleepTime);
@@ -381,9 +529,6 @@ class Withdraw_Processing_Thread extends Thread {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            if (id >= 30)
-                break;
         }
 
         System.out.println("Withdraw processing DONE!");
