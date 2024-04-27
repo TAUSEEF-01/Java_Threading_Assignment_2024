@@ -24,7 +24,7 @@ public class Roll_24 {
         System.out.println("1. Generate random information");
         System.out.println("2. Show information");
         System.out.println("3. Show all information");
-        System.out.println("3. Type any number and hit enter to EXIT!");
+        System.out.println("4. Type any number and hit enter to EXIT!");
         System.out.println();
         System.out.print("Your choice: ");
         int n;
@@ -260,9 +260,12 @@ class Account {
             if (amount > maxTransactionLimit) {
                 throw new Max_Deposit_Transaction_Limit_Exception("Maximum DepositTransaction Limit Violated");
             }
-            balance += amount;
+            this.balance += amount;
             System.out.println("Money: " + amount + " added to the account!");
         } catch (Max_Deposit_Transaction_Limit_Exception e) {
+            // System.out.println("Transaction limit: " + this.maxTransactionLimit);
+            // System.out.println("Amount: " + amount);
+            // System.out.println("Balance: " + this.balance);
             System.out.println(e + " from ID: " + id);
         } catch (Exception e) {
             e.printStackTrace();
@@ -275,9 +278,12 @@ class Account {
             if (amount > maxTransactionLimit) {
                 throw new Max_Withdraw_Transaction_Limit_Exception("Maximum WithdrawTransaction Limit Violated");
             }
-            balance -= amount;
+            this.balance -= amount;
             System.out.println("Money: " + amount + " withdrawn from the account!");
         } catch (Max_Withdraw_Transaction_Limit_Exception e) {
+            // System.out.println("Transaction limit: " + this.maxTransactionLimit);
+            // System.out.println("Amount: " + amount);
+            // System.out.println("Balance: " + this.balance);
             System.out.println(e + " from ID: " + id);
         } catch (Exception e) {
             e.printStackTrace();
@@ -429,13 +435,13 @@ class Deposit_Processing_Thread extends Thread {
                         System.out
                                 .println("ID: " + id + " " + "Current Thread: " + threadNo + " "
                                         + Thread.currentThread());
-                        Account acc = mac.get(id);
-                        int DepositAmount = arrList[id].get(i);
 
                         try {
+                            Account acc = mac.get(id);
+                            int DepositAmount = arrList[id].get(i);
                             acc.deposit(DepositAmount, id);
-                        } catch (Max_Deposit_Transaction_Limit_Exception e) {
-                            e.printStackTrace();
+                        } catch (Exception e) {
+                            System.out.println("Money can't deposit!");
                         }
                     }
 
@@ -499,13 +505,13 @@ class Withdraw_Processing_Thread extends Thread {
                         System.out
                                 .println("ID: " + id + " " + "Current Thread: " + threadNo + " "
                                         + Thread.currentThread());
-                        Account acc = mac.get(id);
-                        int WithdrawAmount = arrList[id].get(i);
 
                         try {
+                            Account acc = mac.get(id);
+                            int WithdrawAmount = arrList[id].get(i);
                             acc.withdraw(WithdrawAmount, id);
-                        } catch (Max_Withdraw_Transaction_Limit_Exception e) {
-                            e.printStackTrace();
+                        } catch (Exception e) {
+                            System.out.println("Money can't withdraw!");
                         }
                     }
 
